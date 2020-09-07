@@ -7,7 +7,7 @@ from mixin.page_data_mixin import PageDataMixin
 """ Header of csv file outside iteration"""
 with open('aquanet.csv', 'w') as f:
     writer = csv.writer(f)
-    writer.writerow(['Наименование', 'URL', 'Цена', 'Артикул', 'Бренд', 'Path', 'Коллекция', 'Тип', 'Назначение',
+    writer.writerow(['Наименование', 'URL', 'Артикул', 'Бренд', 'Path', 'Коллекция', 'Тип', 'Назначение',
                      'Управление', 'Установка', 'Ширина', 'Высота', 'Глубина', 'Материал', 'Дизайн', 'Цвет',
                      'Количество монтажных отверстий', 'Тип излива', 'Форма излива', 'Длина излива',
                      'Смеситель в комплекте', 'Ручной душ', 'Шланг в комплекте', 'Стандарт подводки', 'Длина шланга',
@@ -49,7 +49,6 @@ def write_csv(data):
         writer = csv.writer(f)
         writer.writerow([data['name'],
                          data['url'],
-                         data['price'],
                          data['art'],
                          data['brand'],
                          data['path'],
@@ -93,101 +92,99 @@ def get_page_data(response):
 
     for div in divs:
         """ First page """
-        name = div.select_one('p').find('a').text.strip()
         url = div.select_one('a').get('href')
         urls.append('https://www.aquanet.ru' + url)
-        price = div.select_one('div.price').text
 
-    # for url in urls:
-    #     """
-    #         Page of each products
-    #         Request & pars param's
-    #         Use PageDataMixin, for created short entry of exceptions
-    #         Use methods find_paragraph & find_links, for different param's of search text on page
-    #     """
-    #     r = requests.get(url)
-    #     html = r.text
-    #     soup = BeautifulSoup(html, 'lxml')
-    #
-    #     try:
-    #         """ Find path """
-    #         part_of_path_1 = soup.find('div', id='breadcrumb').select_one('a').text
-    #         part_of_path_2 = soup.find('div', id='breadcrumb').select_one('a').find_next('a').text
-    #         part_of_path_3 = soup.find('div', id='breadcrumb').select_one('a').find_next('a').find_next('a').text
-    #         path = part_of_path_1 + '@' + part_of_path_2 + '@' + part_of_path_3
-    #     except:
-    #         path = 'empty'
-    #
-    #     """ Get properties from each pages """
-    #     art = PageDataMixin(soup.select_one, {'data-id': '125'}).find_paragraph()
-    #     brand = PageDataMixin(soup.select_one, {'data-id': '126'}).find_links()
-    #     collections = PageDataMixin(soup.select_one, {'data-id': '226'}).find_links()
-    #     type_of = PageDataMixin(soup.select_one, {'data-id': '142'}).find_paragraph()
-    #     purpose = PageDataMixin(soup.select_one, {'data-id': '153'}).find_paragraph()
-    #     controlling = PageDataMixin(soup.select_one, {'data-id': '189'}).find_paragraph()
-    #     install = PageDataMixin(soup.select_one, {'data-id': '137'}).find_paragraph()
-    #     width = PageDataMixin(soup.select_one, {'data-id': '132'}).find_paragraph()
-    #     height = PageDataMixin(soup.select_one, {'data-id': '133'}).find_paragraph()
-    #     depth = PageDataMixin(soup.select_one, {'data-id': '134'}).find_paragraph()
-    #     material = PageDataMixin(soup.select_one, {'data-id': '127'}).find_paragraph()
-    #     design = PageDataMixin(soup.select_one, {'data-id': '158'}).find_paragraph()
-    #     color = PageDataMixin(soup.select_one, {'data-id': '128'}).find_paragraph()
-    #     hole_for_montage = PageDataMixin(soup.select_one, {'data-id': '280'}).find_paragraph()
-    #     type_of_wash = PageDataMixin(soup.select_one, {'data-id': '191'}).find_paragraph()
-    #     format_of_wash = PageDataMixin(soup.select_one, {'data-id': '157'}).find_paragraph()
-    #     len_of_wash = PageDataMixin(soup.select_one, {'data-id': '281'}).find_paragraph()
-    #     mixer_in_complect = PageDataMixin(soup.select_one, {'data-id': '298'}).find_paragraph()
-    #     handheld_showerhead = PageDataMixin(soup.select_one, {'data-id': '299'}).find_paragraph()
-    #     tube_in_complect = PageDataMixin(soup.select_one, {'data-id': '326'}).find_paragraph()
-    #     flexible_connection = PageDataMixin(soup.select_one, {'data-id': '283'}).find_paragraph()
-    #     len_of_tube = PageDataMixin(soup.select_one, {'data-id': '307'}).find_paragraph()
-    #     overhead_shower_in_complect = PageDataMixin(soup.select_one, {'data-id': '307'}).find_paragraph()
-    #     country = PageDataMixin(soup.select_one, {'data-id': '397'}).find_paragraph()
-    #     tropical_wash = PageDataMixin(soup.select_one, {'data-id': '485'}).find_paragraph()
-    #     wataring_mode = PageDataMixin(soup.select_one, {'data-id': '303'}).find_paragraph()
-    #     radius = PageDataMixin(soup.select_one, {'data-id': '306'}).find_paragraph()
-    #     termo = PageDataMixin(soup.select_one, {'data-id': '155'}).find_paragraph()
-    #     size_top = PageDataMixin(soup.select_one, {'data-id': '562'}).find_paragraph()
-    #     weigth = PageDataMixin(soup.select_one, {'data-id': '589'}).find_paragraph()
-    #     wataring_mode_top = PageDataMixin(soup.select_one, {'data-id': '303'}).find_paragraph()
-    #
-    #     # Write data to dict and get to the write csv func
-    #     data = {'name': name,
-    #             'url': url,
-    #             'price': price,
-    #             'art': art,
-    #             'brand': brand,
-    #             'path': path,
-    #             'collections': collections,
-    #             'type_of': type_of,
-    #             'purpose': purpose,
-    #             'controlling': controlling,
-    #             'install': install,
-    #             'width': width,
-    #             'height': height,
-    #             'depth': depth,
-    #             'material': material,
-    #             'design': design,
-    #             'color': color,
-    #             'hole_for_montage': hole_for_montage,
-    #             'type_of_wash': type_of_wash,
-    #             'format_of_wash': format_of_wash,
-    #             'len_of_wash': len_of_wash,
-    #             'mixer_in_complect': mixer_in_complect,
-    #             'handheld_showerhead': handheld_showerhead,
-    #             'tube_in_complect': tube_in_complect,
-    #             'flexible_connection': flexible_connection,
-    #             'len_of_tube': len_of_tube,
-    #             'overhead_shower_in_complect': overhead_shower_in_complect,
-    #             'country': country,
-    #             'tropical_wash': tropical_wash,
-    #             'wataring_mode': wataring_mode,
-    #             'radius': radius,
-    #             'termo': termo,
-    #             'size_top': size_top,
-    #             'weigth': weigth,
-    #             'wataring_mode_top': wataring_mode_top}
-    #     write_csv(data)
+    for url in urls:
+        """
+            Page of each products
+            Request & pars param's
+            Use PageDataMixin, for created short entry of exceptions
+            Use methods find_paragraph & find_links, for different param's of search text on page
+        """
+        r = requests.get(url)
+        html = r.text
+        soup = BeautifulSoup(html, 'lxml')
+
+        try:
+            """ Find path """
+            part_of_path_1 = soup.find('div', id='breadcrumb').select_one('a').text
+            part_of_path_2 = soup.find('div', id='breadcrumb').select_one('a').find_next('a').text
+            part_of_path_3 = soup.find('div', id='breadcrumb').select_one('a').find_next('a').find_next('a').text
+            path = part_of_path_1 + '@' + part_of_path_2 + '@' + part_of_path_3
+        except:
+            path = 'empty'
+
+        """ Get properties from each pages """
+        name = soup.find('div', id='content').select_one('h1').text.strip()
+        art = PageDataMixin(soup.select_one, {'data-id': '125'}).find_paragraph()
+        brand = PageDataMixin(soup.select_one, {'data-id': '126'}).find_links()
+        collections = PageDataMixin(soup.select_one, {'data-id': '226'}).find_links()
+        type_of = PageDataMixin(soup.select_one, {'data-id': '142'}).find_paragraph()
+        purpose = PageDataMixin(soup.select_one, {'data-id': '153'}).find_paragraph()
+        controlling = PageDataMixin(soup.select_one, {'data-id': '189'}).find_paragraph()
+        install = PageDataMixin(soup.select_one, {'data-id': '137'}).find_paragraph()
+        width = PageDataMixin(soup.select_one, {'data-id': '132'}).find_paragraph()
+        height = PageDataMixin(soup.select_one, {'data-id': '133'}).find_paragraph()
+        depth = PageDataMixin(soup.select_one, {'data-id': '134'}).find_paragraph()
+        material = PageDataMixin(soup.select_one, {'data-id': '127'}).find_paragraph()
+        design = PageDataMixin(soup.select_one, {'data-id': '158'}).find_paragraph()
+        color = PageDataMixin(soup.select_one, {'data-id': '128'}).find_paragraph()
+        hole_for_montage = PageDataMixin(soup.select_one, {'data-id': '280'}).find_paragraph()
+        type_of_wash = PageDataMixin(soup.select_one, {'data-id': '191'}).find_paragraph()
+        format_of_wash = PageDataMixin(soup.select_one, {'data-id': '157'}).find_paragraph()
+        len_of_wash = PageDataMixin(soup.select_one, {'data-id': '281'}).find_paragraph()
+        mixer_in_complect = PageDataMixin(soup.select_one, {'data-id': '298'}).find_paragraph()
+        handheld_showerhead = PageDataMixin(soup.select_one, {'data-id': '299'}).find_paragraph()
+        tube_in_complect = PageDataMixin(soup.select_one, {'data-id': '326'}).find_paragraph()
+        flexible_connection = PageDataMixin(soup.select_one, {'data-id': '283'}).find_paragraph()
+        len_of_tube = PageDataMixin(soup.select_one, {'data-id': '307'}).find_paragraph()
+        overhead_shower_in_complect = PageDataMixin(soup.select_one, {'data-id': '307'}).find_paragraph()
+        country = PageDataMixin(soup.select_one, {'data-id': '397'}).find_paragraph()
+        tropical_wash = PageDataMixin(soup.select_one, {'data-id': '485'}).find_paragraph()
+        wataring_mode = PageDataMixin(soup.select_one, {'data-id': '303'}).find_paragraph()
+        radius = PageDataMixin(soup.select_one, {'data-id': '306'}).find_paragraph()
+        termo = PageDataMixin(soup.select_one, {'data-id': '155'}).find_paragraph()
+        size_top = PageDataMixin(soup.select_one, {'data-id': '562'}).find_paragraph()
+        weigth = PageDataMixin(soup.select_one, {'data-id': '589'}).find_paragraph()
+        wataring_mode_top = PageDataMixin(soup.select_one, {'data-id': '303'}).find_paragraph()
+
+        # Write data to dict and get to the write csv func
+        data = {'name': name,
+                'url': url,
+                'art': art,
+                'brand': brand,
+                'path': path,
+                'collections': collections,
+                'type_of': type_of,
+                'purpose': purpose,
+                'controlling': controlling,
+                'install': install,
+                'width': width,
+                'height': height,
+                'depth': depth,
+                'material': material,
+                'design': design,
+                'color': color,
+                'hole_for_montage': hole_for_montage,
+                'type_of_wash': type_of_wash,
+                'format_of_wash': format_of_wash,
+                'len_of_wash': len_of_wash,
+                'mixer_in_complect': mixer_in_complect,
+                'handheld_showerhead': handheld_showerhead,
+                'tube_in_complect': tube_in_complect,
+                'flexible_connection': flexible_connection,
+                'len_of_tube': len_of_tube,
+                'overhead_shower_in_complect': overhead_shower_in_complect,
+                'country': country,
+                'tropical_wash': tropical_wash,
+                'wataring_mode': wataring_mode,
+                'radius': radius,
+                'termo': termo,
+                'size_top': size_top,
+                'weigth': weigth,
+                'wataring_mode_top': wataring_mode_top}
+        write_csv(data)
 
 
 def main():
